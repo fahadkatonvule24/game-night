@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node server.cjs",
     "dev": "node server.cjs",
+    "postinstall": "node scripts/fetch-cloudflared.cjs",
     "test": "node --test tests/*.test.cjs",
-    "check": "node --check banter.js && node --check qr.js && node --check phonehost.js && node --check play.js && node --check tablegames.cjs && node --check app.js && node --check core.js && node --check sounds.js && node --check imposter.js && node --check trivia.js && node --check effects.js && node --check server.cjs"
+    "check": "node --check banter.js && node --check qr.js && node --check phonehost.js && node --check play.js && node --check tablegames.cjs && node --check app.js && node --check core.js && node --check sounds.js && node --check imposter.js && node --check trivia.js && node --check effects.js && node --check server.cjs && node --check scripts/fetch-cloudflared.cjs"
   },
   "devDependencies": {
     "jsdom": "^29.1.1",

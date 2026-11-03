@@ -4,7 +4,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
 const jsQR = require('jsqr');
-const { createServer } = require('../server.cjs');
+const { createServer, tunnelUrlFrom } = require('../server.cjs');
+const { wanted } = require('../scripts/fetch-cloudflared.cjs');
 const qr = require('../qr.js');
 
 // Reads Server-Sent Events from the table until `until` returns true.
@@ -105,4 +106,22 @@ test('the QR encoder makes codes that a real decoder can read', () => {
   for (const text of ['http://192.168.1.23:3000/play.html?room=ABCD', 'http://10.0.0.5:3000/play.html?room=WXYZ', 'Kampala 🇺🇬', 'z'.repeat(150)]) assert.equal(read(text), text);
   assert.throws(() => qr.encode('x'.repeat(400)), /too long/);
   assert.match(qr.toSvg('hi'), /^<svg[^>]+viewBox="0 0 29 29"/);
+});
+
+test('the public tunnel link is read from cloudflared and shared with the big screen', async t => {
+  assert.equal(tunnelUrlFrom('INF |  https://warm-lion-river-blue.trycloudflare.com  |'), 'https://warm-lion-river-blue.trycloudflare.com');
+  assert.equal(tunnelUrlFrom('ERR failed: Post "https://api.trycloudflare.com/tunnel"'), null, 'Cloudflare’s own API address is not a player link');
+  assert.equal(tunnelUrlFrom('nothing here'), null);
+  assert.equal(wanted({ RENDER: 'true' }), true);
+  assert.equal(wanted({ RENDER: 'true', PUBLIC_TUNNEL: 'off' }), false);
+  assert.equal(wanted({}), false, 'a laptop server stays local unless asked');
+  assert.equal(wanted({ PUBLIC_TUNNEL: 'on' }), true);
+  const tunnel = { status: 'ready', url: 'https://warm-lion-river-blue.trycloudflare.com' };
+  const server = createServer({ tunnel });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => server.close());
+  const network = await (await fetch(`http://127.0.0.1:${server.address().port}/api/network`)).json();
+  assert.equal(network.tunnel, 'ready');
+  assert.equal(network.publicUrl, tunnel.url);
+  for (const path of ['/scripts/fetch-cloudflared.cjs', '/bin/cloudflared']) assert.equal((await fetch(`http://127.0.0.1:${server.address().port}${path}`)).status, 404, path);
 });

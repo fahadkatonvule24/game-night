@@ -2,18 +2,49 @@ const http = require('node:http');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { spawn } = require('node:child_process');
 const { createRooms, GameError } = require('./tablegames.cjs');
+const { fetchCloudflared, wanted: tunnelWanted } = require('./scripts/fetch-cloudflared.cjs');
 
 const root = __dirname;
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 // Development folders stay private even though the server is reachable on the local network.
-const hidden = new Set(['node_modules', 'tests']);
+const hidden = new Set(['node_modules', 'tests', 'scripts', 'bin']);
 
 // Addresses phones on the same Wi-Fi can use to reach this laptop. Private ranges come first.
 function lanAddresses() {
   const all = Object.values(os.networkInterfaces()).flat().filter(item => item && item.family === 'IPv4' && !item.internal).map(item => item.address);
   const rank = address => (address.startsWith('192.168.') ? 0 : address.startsWith('10.') ? 1 : /^172\.(1[6-9]|2\d|3[01])\./.test(address) ? 2 : 3);
   return all.sort((a, b) => rank(a) - rank(b));
+}
+
+// Pulls the public link out of cloudflared's log, e.g. https://happy-cat-words.trycloudflare.com.
+// The api. host is Cloudflare's own endpoint, not a link for players.
+function tunnelUrlFrom(text) {
+  return String(text).match(/https:\/\/(?!api\.)[a-z0-9-]+\.trycloudflare\.com/)?.[0] || null;
+}
+
+// A free Cloudflare "quick tunnel" gives phones a trycloudflare.com link to this server. It restarts
+// if it drops (the link changes, and the big screen always shows the current one).
+function startTunnel(port, tunnel, binary) {
+  tunnel.status = 'starting';
+  const child = spawn(binary, ['tunnel', '--no-autoupdate', '--url', `http://127.0.0.1:${port}`], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const watch = chunk => {
+    const found = tunnelUrlFrom(chunk);
+    if (!found || found === tunnel.url) return;
+    tunnel.url = found;
+    tunnel.status = 'ready';
+    console.log(`Phones can join from any network: ${found}`);
+  };
+  child.stdout.on('data', watch);
+  child.stderr.on('data', watch);
+  child.on('error', error => console.warn(`Tunnel failed to start: ${error.message}`));
+  child.on('exit', () => {
+    tunnel.url = null;
+    tunnel.status = 'starting';
+    setTimeout(() => startTunnel(port, tunnel, binary), 5000).unref();
+  });
+  return child;
 }
 
 function readJson(request) {
@@ -38,12 +69,12 @@ function sendJson(response, status, body) {
   response.end(JSON.stringify(body));
 }
 
-function createServer({ port = 3000, rooms = createRooms() } = {}) {
+function createServer({ port = 3000, rooms = createRooms(), tunnel = { status: 'off', url: null } } = {}) {
   async function api(request, response, url) {
     const parts = url.pathname.split('/').filter(Boolean).slice(1);
     if (request.method === 'GET' && parts[0] === 'network') {
       const actualPort = server.address()?.port || port;
-      sendJson(response, 200, { urls: lanAddresses().map(address => `http://${address}:${actualPort}`) });
+      sendJson(response, 200, { urls: lanAddresses().map(address => `http://${address}:${actualPort}`), tunnel: tunnel.status, publicUrl: tunnel.url });
       return;
     }
     if (parts[0] !== 'rooms') { sendJson(response, 404, { error: 'Not found' }); return; }
@@ -115,10 +146,15 @@ if (require.main === module) {
   const port = Number(process.env.PORT) || 3000;
   // Listen on every network card so phones on the same Wi-Fi can join phone games.
   const host = process.env.HOST || '0.0.0.0';
-  createServer({ port }).listen(port, host, () => {
+  const tunnel = { status: tunnelWanted() ? 'starting' : 'off', url: null };
+  createServer({ port, tunnel }).listen(port, host, () => {
     console.log(`Game Night is ready: http://localhost:${port}`);
     lanAddresses().forEach(address => console.log(`On your Wi-Fi:       http://${address}:${port}`));
+    if (tunnel.status === 'off') return;
+    fetchCloudflared()
+      .then(binary => startTunnel(port, tunnel, binary))
+      .catch(error => { tunnel.status = 'off'; console.warn(`No public tunnel: ${error.message}`); });
   });
 }
 
-module.exports = { createServer, lanAddresses };
+module.exports = { createServer, lanAddresses, tunnelUrlFrom };

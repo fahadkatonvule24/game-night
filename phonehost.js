@@ -21,6 +21,7 @@
     let room = null;
     let joinUrl = '';
     let lanFound = false;
+    let anyNetwork = false;
     let view = null;
     let source = null;
     const feed = [];
@@ -54,10 +55,18 @@
       const wake = host.setTimeout(() => { const note = container.querySelector('[data-wake]'); if (note && !view) note.textContent = 'Waking up the server. On a free hosting plan this can take up to a minute…'; }, 4000);
       try {
         room = await call('/api/rooms', { game: gameId, options: options.roomOptions || {} });
-        const network = await call('/api/network', null, 'GET').catch(() => ({ urls: [] }));
+        const ask = () => call('/api/network', null, 'GET').catch(() => ({ urls: [] }));
+        let network = await ask();
+        // The public tunnel takes a few seconds to come up after the server wakes; wait for its link.
+        for (let i = 0; network.tunnel === 'starting' && !network.publicUrl && i < 12 && !destroyed; i += 1) {
+          await new Promise(resolve => host.setTimeout(resolve, 1500));
+          network = await ask();
+        }
         const local = ['localhost', '127.0.0.1', '::1', '[::1]'].includes(host.location.hostname);
-        lanFound = !local || network.urls.length > 0;
-        const base = local && network.urls.length ? network.urls[0] : host.location.origin;
+        lanFound = !local || network.urls.length > 0 || Boolean(network.publicUrl);
+        anyNetwork = Boolean(network.publicUrl) || !local;
+        // Phones join through the public tunnel when there is one: it works on networks that can't reach the host's own address.
+        const base = network.publicUrl || (local && network.urls.length ? network.urls[0] : host.location.origin);
         joinUrl = `${base}/play.html?room=${room.code}`;
       } catch {
         problem('Couldn’t open a table.', 'Make sure the laptop server is running with <code>npm start</code>, then try again.');
@@ -121,7 +130,7 @@
     function lobby() {
       const needed = Math.max(0, view.min - view.players.length);
       const qr = root.GameNightQR ? root.GameNightQR.toSvg(joinUrl) : '';
-      return `<div class="ph-lobby"><div class="ph-qr">${qr}</div><div class="ph-join"><span class="tv-kicker">${escape(view.title.toUpperCase())} · SCAN TO JOIN</span><h2 id="dialog-title" class="tv-title tv-title-small">Grab your phones!</h2><p class="tv-lede">Scan the code with your phone camera, or open <b class="ph-url">${escape(joinUrl)}</b> and enter</p><div class="ph-code" aria-label="Table code ${escape(view.code)}">${escape(view.code).split('').map(letter => `<span>${letter}</span>`).join('')}</div>${lanFound ? '' : '<p class="tv-note">⚠️ This laptop isn’t on a network. Connect it to Wi-Fi so phones can reach it.</p>'}<p class="tv-note">Phones must be on the same Wi-Fi as this laptop.</p></div></div>
+      return `<div class="ph-lobby"><div class="ph-qr">${qr}</div><div class="ph-join"><span class="tv-kicker">${escape(view.title.toUpperCase())} · SCAN TO JOIN</span><h2 id="dialog-title" class="tv-title tv-title-small">Grab your phones!</h2><p class="tv-lede">Scan the code with your phone camera, or open <b class="ph-url">${escape(joinUrl)}</b> and enter</p><div class="ph-code" aria-label="Table code ${escape(view.code)}">${escape(view.code).split('').map(letter => `<span>${letter}</span>`).join('')}</div>${lanFound ? '' : '<p class="tv-note">⚠️ This laptop isn’t on a network. Connect it to Wi-Fi so phones can reach it.</p>'}<p class="tv-note">${anyNetwork ? 'Works on any Wi-Fi or mobile data.' : 'Phones must be on the same Wi-Fi as this laptop.'}</p></div></div>
         <h3 class="tv-seat-heading">At the table · ${view.players.length} of ${view.max}</h3>
         <div class="tv-seats ph-players">${view.players.length ? view.players.map((p, i) => `<span class="tv-seat is-up" style="--i:${i}"><span class="tv-avatar" aria-hidden="true">${escape(p.emoji)}</span>${escape(p.name)}<button type="button" class="ph-remove" data-phone-remove="${escape(p.id)}" aria-label="Remove ${escape(p.name)}">×</button></span>`).join('') : '<p class="tv-note">Nobody yet. Be the first to scan! 👀</p>'}</div>
         <div class="dialog-actions">${secondary('close', 'Close table')}<button type="button" class="button tv-button" data-phone-action="start" ${needed ? 'disabled' : ''}>${needed ? `Waiting for ${needed} more…` : `Deal everyone in · ${view.players.length} players`} <span aria-hidden="true">↗</span></button></div>`;
@@ -302,6 +311,8 @@
       }
     }
     const timer = host.setInterval(pulse, 100);
+    // Free hosting sleeps after a quiet spell; phones joining through the tunnel don't count as visits, so the big screen checks in.
+    const keepAwake = host.setInterval(() => { Promise.resolve(host.fetch?.('/api/network')).catch(() => {}); }, 240000);
     seen.tick = 0;
 
     function render() {
@@ -341,6 +352,7 @@
       if (destroyed) return;
       destroyed = true;
       host.clearInterval(timer);
+      host.clearInterval(keepAwake);
       source?.close();
       if (room) call(`/api/rooms/${room.code}/close`, { hostKey: room.hostKey }).catch(() => {});
       container.removeEventListener('click', onClick);

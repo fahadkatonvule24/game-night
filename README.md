@@ -109,6 +109,15 @@ Use one shared screen. For hidden prompts, pass the device to the performer so t
 
 Charades, Taboo, Quick Draw, and Who Am I? need at least two people on every team. If a team is too small, the game will ask you to reduce the team count or add players.
 
+## Playing online (Render)
+
+The app also runs on [Render](https://render.com) as a Node web service. Use build command `npm install --omit=dev` and start command `npm start`. On Render, the server also opens a free Cloudflare quick tunnel, and phone-game QR codes point to its `https://….trycloudflare.com` link. That way, phones on networks that can't look up `onrender.com` can still join.
+
+- Open your Render address on the big screen. Phones scan the QR code from any Wi-Fi or mobile data.
+- The tunnel link changes whenever Render restarts the server. The QR code always shows the current link.
+- Render's free plan sleeps after 15 minutes without visitors. Open the site a minute before playing; the big screen keeps it awake while a table is open.
+- Set the environment variable `PUBLIC_TUNNEL=off` to turn the tunnel off, or `PUBLIC_TUNNEL=on` to use it on your own Linux or Windows computer.
+
 ## Saving your night
 
 The website saves your setup and scores in your current browser. It does not use accounts or internet multiplayer: phone games only work between devices on the same Wi-Fi as the laptop, and an open table disappears when the server stops. Opening the file directly and visiting `localhost:3000` may use separate saves; clearing browser data removes saved progress. Local-file storage availability depends on your browser.

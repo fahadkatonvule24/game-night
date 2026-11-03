@@ -984,3 +984,29 @@ test('Imposter, Pass the Bomb, Most Likely To and Would You Rather offer phones 
   assert.deepEqual(sent[0], ['/api/rooms', { game: 'imposter', options: { category: 'food', duration: 180 } }]);
   assert.match(app.query('#dialog-title').textContent, /Couldn’t open a table/);
 });
+
+test('phone tables wait for the public tunnel and put its link in the QR code', async t => {
+  const app = setup(t);
+  const calls = [];
+  let tunnelChecks = 0;
+  const reply = body => Promise.resolve({ ok: true, json: () => Promise.resolve(body) });
+  app.window.fetch = (url, init) => {
+    calls.push(url);
+    if (url === '/api/rooms') return reply({ code: 'WXYZ', hostKey: 'secret' });
+    if (url === '/api/network') return reply(++tunnelChecks < 2 ? { urls: [], tunnel: 'starting', publicUrl: null } : { urls: [], tunnel: 'ready', publicUrl: 'https://warm-lion-river-blue.trycloudflare.com' });
+    return reply({ ok: true });
+  };
+  const streams = [];
+  app.window.EventSource = class { constructor(url) { this.url = url; streams.push(this); } addEventListener() {} close() { this.closed = true; } };
+  app.window.setTimeout = callback => { Promise.resolve().then(callback); return 1; };
+  app.window.GameNightQR = { toSvg: text => `<svg data-text="${text}"></svg>` };
+  app.openGame('matatu');
+  app.click('[data-action="start-round"]');
+  for (let i = 0; i < 12; i += 1) await settle();
+  assert.equal(tunnelChecks, 2, 'waited for the tunnel to come up');
+  assert.equal(streams.length, 1);
+  streams[0].onmessage({ data: JSON.stringify({ code: 'WXYZ', title: 'Matatu', min: 2, max: 6, started: false, players: [], game: null }) });
+  assert.equal(app.query('.ph-url').textContent, 'https://warm-lion-river-blue.trycloudflare.com/play.html?room=WXYZ');
+  assert.equal(app.query('.ph-qr svg').dataset.text, 'https://warm-lion-river-blue.trycloudflare.com/play.html?room=WXYZ');
+  assert.match(app.query('.ph-join').textContent, /any Wi-Fi or mobile data/);
+});
