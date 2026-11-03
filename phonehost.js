@@ -49,7 +49,9 @@
         problem('Phone games need the laptop server.', 'Open a terminal in the Game Night folder, run <code>npm start</code>, then open <b>http://localhost:3000</b> on this laptop.');
         return;
       }
-      show('<div class="tv-card"><div class="spinner-big" aria-hidden="true"></div><h2 id="dialog-title" class="tv-title tv-title-small">Setting the table…</h2></div>');
+      show('<div class="tv-card"><div class="spinner-big" aria-hidden="true"></div><h2 id="dialog-title" class="tv-title tv-title-small">Setting the table…</h2><p class="tv-lede" data-wake></p></div>');
+      // Free hosting plans sleep when idle; say so instead of spinning in silence.
+      const wake = host.setTimeout(() => { const note = container.querySelector('[data-wake]'); if (note && !view) note.textContent = 'Waking up the server. On a free hosting plan this can take up to a minute…'; }, 4000);
       try {
         room = await call('/api/rooms', { game: gameId, options: options.roomOptions || {} });
         const network = await call('/api/network', null, 'GET').catch(() => ({ urls: [] }));
@@ -63,7 +65,7 @@
       }
       if (destroyed) { call(`/api/rooms/${room.code}/close`, { hostKey: room.hostKey }).catch(() => {}); return; }
       source = new host.EventSource(`/api/rooms/${room.code}/events?host=${encodeURIComponent(room.hostKey)}`);
-      source.onmessage = event => { view = JSON.parse(event.data); react(); render(); };
+      source.onmessage = event => { host.clearTimeout(wake); view = JSON.parse(event.data); react(); render(); };
       source.addEventListener('closed', () => { source.close(); });
     }
 

@@ -55,8 +55,8 @@ function createServer({ port = 3000, rooms = createRooms() } = {}) {
     const code = parts[1];
     if (request.method === 'GET' && parts[2] === 'events') {
       const query = url.searchParams;
-      // X-Accel-Buffering stops hosting proxies (such as Render's) from holding back live updates.
-      response.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store', Connection: 'keep-alive', 'X-Accel-Buffering': 'no', 'X-Content-Type-Options': 'nosniff' });
+      // no-transform and X-Accel-Buffering stop hosting proxies (Render, Cloudflare) from compressing or holding back live updates.
+      response.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store, no-transform', Connection: 'keep-alive', 'X-Accel-Buffering': 'no', 'X-Content-Type-Options': 'nosniff' });
       const ping = setInterval(() => response.write(': ping\n\n'), 20000);
       let unsubscribe = () => {};
       const finish = () => { clearInterval(ping); unsubscribe(); };

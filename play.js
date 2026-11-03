@@ -72,6 +72,7 @@
   function connect() {
     source?.close();
     app.innerHTML = '<section class="waiting"><div class="spinner" aria-hidden="true"></div><p>Finding your seat…</p></section>';
+    setTimeout(() => { if (!view) { const note = app.querySelector('.waiting p'); if (note) note.textContent = 'Waking up the server. This can take up to a minute…'; } }, 5000);
     source = new EventSource(`/api/rooms/${code}/events?player=${encodeURIComponent(seat.playerId)}&key=${encodeURIComponent(seat.key)}`);
     source.onmessage = event => { view = JSON.parse(event.data); document.body.classList.remove('offline'); render(); };
     source.onerror = () => document.body.classList.add('offline');
