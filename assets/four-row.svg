@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A grid of coloured discs with four in a diagonal row</title>
+  <ellipse cx="150" cy="144" rx="96" ry="7" fill="#242722" opacity=".08"/>
+  <rect x="70" y="30" width="160" height="108" rx="14" fill="#7BA9C4" stroke="#242722" stroke-width="3"/>
+  <g stroke="#242722" stroke-width="2.5">
+    <circle cx="92" cy="52" r="10" fill="#FFF9EC"/><circle cx="119" cy="52" r="10" fill="#FFF9EC"/><circle cx="146" cy="52" r="10" fill="#FFF9EC"/><circle cx="173" cy="52" r="10" fill="#FFF9EC"/><circle cx="200" cy="52" r="10" fill="#FF724F"/>
+    <circle cx="92" cy="77" r="10" fill="#FFF9EC"/><circle cx="119" cy="77" r="10" fill="#FFF9EC"/><circle cx="146" cy="77" r="10" fill="#DCF477"/><circle cx="173" cy="77" r="10" fill="#FF724F"/><circle cx="200" cy="77" r="10" fill="#DCF477"/>
+    <circle cx="92" cy="102" r="10" fill="#FFF9EC"/><circle cx="119" cy="102" r="10" fill="#DCF477"/><circle cx="146" cy="102" r="10" fill="#FF724F"/><circle cx="173" cy="102" r="10" fill="#DCF477"/><circle cx="200" cy="102" r="10" fill="#DCF477"/>
+    <circle cx="92" cy="125" r="9" fill="#DCF477"/><circle cx="119" cy="125" r="9" fill="#FF724F"/><circle cx="146" cy="125" r="9" fill="#DCF477"/><circle cx="173" cy="125" r="9" fill="#FF724F"/><circle cx="200" cy="125" r="9" fill="#FF724F"/>
+  </g>
+  <path d="M112 132 208 44" stroke="#242722" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 9"/>
+  <circle cx="246" cy="22" r="11" fill="#FF724F" stroke="#242722" stroke-width="2.5"/><path d="M246 38v14m-5-5 5 6 5-6" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

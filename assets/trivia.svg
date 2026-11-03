@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A bright idea with a question mark inside a lightbulb</title>
+  <ellipse cx="151" cy="144" rx="59" ry="7" fill="#242722" opacity=".08"/>
+  <g transform="rotate(8 151 83)"><path d="M123 107c-3-13-22-23-22-47a49 49 0 1 1 98 0c0 24-19 34-22 47l-3 16h-48l-3-16Z" fill="#242722" transform="translate(5 3)"/><path d="M123 107c-3-13-22-23-22-47a49 49 0 1 1 98 0c0 24-19 34-22 47l-3 16h-48l-3-16Z" fill="#FFF9EC" stroke="#242722" stroke-width="3"/><path d="M126 109h48v20c0 6-5 11-11 11h-26c-6 0-11-5-11-11v-20Z" fill="#C7B7ED" stroke="#242722" stroke-width="3"/><path d="M127 119h46m-46 10h46" stroke="#242722" stroke-width="3"/><path d="M135 46c0-16 29-16 29 0 0 10-14 12-14 24" stroke="#242722" stroke-width="8" stroke-linecap="round"/><circle cx="150" cy="86" r="4.5" fill="#242722"/></g>
+  <path d="M76 56H61m23-27-12-9m8 66-13 7m144-40 15-3m-23-22 10-11m1 65 14 6" stroke="#242722" stroke-width="3" stroke-linecap="round"/><path d="m238 101 4 12 12 4-12 4-4 12-4-12-12-4 12-4 4-12Z" fill="#C7B7ED" stroke="#242722" stroke-width="2"/><path d="m61 112 3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8Z" fill="#242722"/>
+</svg>

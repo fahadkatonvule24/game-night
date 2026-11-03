@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Speech bubbles with the forbidden words crossed out</title>
+  <ellipse cx="155" cy="140" rx="83" ry="8" fill="#242722" opacity=".08"/>
+  <g transform="rotate(-8 117 65)"><path d="M61 26h112a17 17 0 0 1 17 17v50a17 17 0 0 1-17 17h-70l-30 22v-22H61a17 17 0 0 1-17-17V43a17 17 0 0 1 17-17Z" fill="#242722" transform="translate(4 4)"/><path d="M61 26h112a17 17 0 0 1 17 17v50a17 17 0 0 1-17 17h-70l-30 22v-22H61a17 17 0 0 1-17-17V43a17 17 0 0 1 17-17Z" fill="#FFF9EC" stroke="#242722" stroke-width="3" stroke-linejoin="round"/><path d="M69 52h92M69 68h61M69 84h79" stroke="#242722" stroke-width="5" stroke-linecap="round"/></g>
+  <g transform="rotate(9 197 104)"><path d="M165 72h66a15 15 0 0 1 15 15v29a15 15 0 0 1-15 15h-3v16l-24-16h-39a15 15 0 0 1-15-15V87a15 15 0 0 1 15-15Z" fill="#DCF477" stroke="#242722" stroke-width="3" stroke-linejoin="round"/><path d="m185 89 24 24m0-24-24 24" stroke="#242722" stroke-width="7" stroke-linecap="round"/></g>
+  <path d="m212 41 7-10m3 18 13-3M38 104l-12 4m19 5-6 11" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/><path d="m238 15 3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8Z" fill="#242722"/>
+</svg>

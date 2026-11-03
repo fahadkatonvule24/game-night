@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Two phones facing off, one showing a rock and one showing scissors</title>
+  <ellipse cx="150" cy="142" rx="90" ry="7" fill="#242722" opacity=".08"/>
+  <g transform="rotate(-10 92 84)"><rect x="56" y="24" width="72" height="118" rx="12" fill="#242722"/><rect x="62" y="34" width="60" height="92" rx="5" fill="#FFF9EC"/><path d="M76 92c-4-16 6-28 18-28 14 0 22 10 18 26-2 10-30 12-36 2Z" fill="#A9A99B" stroke="#242722" stroke-width="3"/><path d="m86 74 6 4m8-6 2 6" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/></g>
+  <g transform="rotate(10 208 84)"><rect x="172" y="24" width="72" height="118" rx="12" fill="#242722"/><rect x="178" y="34" width="60" height="92" rx="5" fill="#DCF477"/><circle cx="198" cy="100" r="9" stroke="#242722" stroke-width="3" fill="#FFF9EC"/><circle cx="218" cy="100" r="9" stroke="#242722" stroke-width="3" fill="#FFF9EC"/><path d="m202 92 24-40m-12 40-18-40" stroke="#242722" stroke-width="4" stroke-linecap="round"/></g>
+  <text x="150" y="92" text-anchor="middle" fill="#FF724F" font-family="Arial, sans-serif" font-size="22" font-weight="900">VS</text>
+  <path d="m150 40-4-12m14 16 8-8m-26 8-8-8" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

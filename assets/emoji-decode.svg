@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A speech bubble full of emoji clues with a question mark</title>
+  <ellipse cx="150" cy="142" rx="86" ry="7" fill="#242722" opacity=".08"/>
+  <path d="M62 30h176a14 14 0 0 1 14 14v58a14 14 0 0 1-14 14H128l-26 20 4-20H62a14 14 0 0 1-14-14V44a14 14 0 0 1 14-14Z" fill="#FFF9EC" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="96" cy="72" r="20" fill="#FFD25A" stroke="#242722" stroke-width="3"/><circle cx="89" cy="68" r="3" fill="#242722"/><circle cx="103" cy="68" r="3" fill="#242722"/><path d="M87 79c6 6 12 6 18 0" stroke="#242722" stroke-width="3" stroke-linecap="round"/>
+  <path d="m150 52 6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2 6-13Z" fill="#FF724F" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M196 60c8-12 28-8 26 6-1 10-14 12-14 20" stroke="#242722" stroke-width="5" stroke-linecap="round"/><circle cx="208" cy="96" r="4" fill="#242722"/>
+  <path d="m34 50-9-5m12-9-3-10m233 34 12-4m-15 22 11 6" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

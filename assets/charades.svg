@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A smiling and a surprised theatrical mask</title>
+  <ellipse cx="156" cy="140" rx="82" ry="8" fill="#242722" opacity=".08"/>
+  <g transform="rotate(-17 118 77)"><path d="M65 29c33 12 60 12 92 0v51c0 32-23 53-46 60-24-7-46-28-46-60V29Z" fill="#242722" transform="translate(4 4)"/><path d="M65 29c33 12 60 12 92 0v51c0 32-23 53-46 60-24-7-46-28-46-60V29Z" fill="#FFF9EC" stroke="#242722" stroke-width="3" stroke-linejoin="round"/><path d="M80 65q11-11 20 0m22 0q11-11 20 0" stroke="#242722" stroke-width="4" stroke-linecap="round"/><path d="M87 85h49c-4 29-43 29-49 0Z" fill="#FF724F" stroke="#242722" stroke-width="3" stroke-linejoin="round"/></g>
+  <g transform="rotate(14 187 87)"><path d="M147 40c27 10 55 10 83 0v46c0 30-20 47-41 54-22-7-42-24-42-54V40Z" fill="#C7B7ED" stroke="#242722" stroke-width="3" stroke-linejoin="round"/><ellipse cx="170" cy="76" rx="5" ry="8" fill="#242722"/><ellipse cx="207" cy="76" rx="5" ry="8" fill="#242722"/><ellipse cx="189" cy="107" rx="12" ry="16" fill="#FFF9EC" stroke="#242722" stroke-width="3"/></g>
+  <path d="m47 67-11-4m16-12-7-10m194 63 13 1m-15 13 9 7" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/><path d="m234 23 3 10 10 3-10 3-3 10-3-10-10-3 10-3 3-10Z" fill="#242722"/>
+</svg>

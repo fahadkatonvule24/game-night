@@ -1,0 +1,19 @@
+{
+  "name": "game-night",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An offline-friendly party game hub with random teams and a scoreboard.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.cjs",
+    "dev": "node server.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check banter.js && node --check qr.js && node --check phonehost.js && node --check play.js && node --check tablegames.cjs && node --check app.js && node --check core.js && node --check sounds.js && node --check imposter.js && node --check trivia.js && node --check effects.js && node --check server.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "jsqr": "^1.4.0"
+  }
+}

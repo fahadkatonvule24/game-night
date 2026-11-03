@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A fan of playing cards with a big seven and a phone</title>
+  <ellipse cx="150" cy="142" rx="90" ry="7" fill="#242722" opacity=".08"/>
+  <g transform="rotate(-20 110 90)"><rect x="70" y="30" width="72" height="100" rx="10" fill="#FFF9EC" stroke="#242722" stroke-width="3"/><text x="82" y="54" fill="#242722" font-family="Arial, sans-serif" font-size="18" font-weight="900">K</text><path d="m106 70 10 14-10 14-10-14Z" fill="#242722"/></g>
+  <g transform="rotate(14 190 90)"><rect x="152" y="30" width="72" height="100" rx="10" fill="#FFF9EC" stroke="#242722" stroke-width="3"/><text x="164" y="54" fill="#FF724F" font-family="Arial, sans-serif" font-size="18" font-weight="900">A</text><path d="M188 96c-16-12-20-20-12-26 5-3 10 0 12 4 2-4 7-7 12-4 8 6 4 14-12 26Z" fill="#FF724F"/></g>
+  <rect x="113" y="22" width="76" height="108" rx="11" fill="#DCF477" stroke="#242722" stroke-width="3"/><text x="151" y="98" text-anchor="middle" fill="#242722" font-family="Arial, sans-serif" font-size="58" font-weight="900">7</text>
+  <rect x="226" y="80" width="34" height="58" rx="7" fill="#242722"/><rect x="230" y="86" width="26" height="40" rx="3" fill="#C7B7ED"/><circle cx="243" cy="132" r="2.5" fill="#FFF9EC"/>
+  <path d="m40 54 10 4m-6 12 10-2m-8-26 8 8" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

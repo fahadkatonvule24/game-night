@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A fast-running hourglass and a lightning bolt</title>
+  <ellipse cx="151" cy="143" rx="79" ry="7" fill="#242722" opacity=".08"/>
+  <g transform="rotate(-9 129 79)">
+    <path d="M90 28h79v13c0 16-12 25-27 37 15 12 27 21 27 37v14H90v-14c0-16 12-25 27-37-15-12-27-21-27-37V28Z" fill="#242722" transform="translate(5 5)"/>
+    <path d="M90 28h79v13c0 16-12 25-27 37 15 12 27 21 27 37v14H90v-14c0-16 12-25 27-37-15-12-27-21-27-37V28Z" fill="#F0EDE5" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M101 44h57c-4 10-15 19-28 28-13-9-25-18-29-28Z" fill="#FF724F"/>
+    <path d="M101 117c8-5 17-17 29-23 11 6 20 18 28 23v3h-57v-3Z" fill="#FF724F"/>
+    <path d="M130 78v10" stroke="#FF724F" stroke-width="3" stroke-dasharray="2 3" stroke-linecap="round"/>
+    <rect x="82" y="19" width="95" height="13" rx="6" fill="#C7B7ED" stroke="#242722" stroke-width="3"/>
+    <rect x="82" y="124" width="95" height="13" rx="6" fill="#C7B7ED" stroke="#242722" stroke-width="3"/>
+  </g>
+  <path d="m219 35-45 51h24l-8 43 52-63h-28l5-31Z" fill="#242722" transform="translate(4 4)"/>
+  <path d="m219 35-45 51h24l-8 43 52-63h-28l5-31Z" fill="#DCF477" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M65 63H45m24 15H34m34 15H47m177-73 6-10m14 33 13-3M72 122l-11 7" stroke="#242722" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="63" cy="32" r="4" fill="#242722"/>
+</svg>

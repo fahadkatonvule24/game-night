@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">A smiling player wearing a mystery identity on a headband</title>
+  <ellipse cx="150" cy="144" rx="79" ry="7" fill="#242722" opacity=".08"/>
+  <path d="M92 138c3-21 18-31 58-31s55 10 58 31" fill="#C7B7ED" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M108 69c-9-7-18 1-14 13 2 7 6 11 14 9m84-22c9-7 18 1 14 13-2 7-6 11-14 9" fill="#F0EDE5" stroke="#242722" stroke-width="3"/>
+  <path d="M107 61c0-24 18-35 43-35s43 11 43 35v28c0 24-20 39-43 39s-43-15-43-39V61Z" fill="#F0EDE5" stroke="#242722" stroke-width="3"/>
+  <path d="M108 67c-5-22 3-37 14-44 21-13 48-8 61 7 10 11 11 23 9 37l-8-21-18 6-17-10-17 10-17-7-7 22Z" fill="#242722" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M107 64h86v13h-86Z" fill="#DCF477" stroke="#242722" stroke-width="3"/>
+  <circle cx="130" cy="89" r="3" fill="#242722"/><circle cx="170" cy="89" r="3" fill="#242722"/>
+  <path d="M139 107c6 5 16 5 22 0" stroke="#242722" stroke-width="3" stroke-linecap="round"/>
+  <g transform="rotate(8 151 45)">
+    <rect x="126" y="15" width="50" height="57" rx="7" fill="#242722" transform="translate(3 3)"/>
+    <rect x="126" y="15" width="50" height="57" rx="7" fill="#FF724F" stroke="#242722" stroke-width="3"/>
+    <path d="M141 34c1-11 22-12 22 0 0 8-12 9-12 16" stroke="#242722" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="151" cy="59" r="2.5" fill="#242722"/>
+  </g>
+  <path d="M63 44c0-15 23-15 23-1 0 8-12 9-12 15" stroke="#242722" stroke-width="4" stroke-linecap="round"/><circle cx="74" cy="69" r="3" fill="#242722"/>
+  <path d="m224 30 4 10 11 4-11 4-4 10-4-10-10-4 10-4 4-10Z" fill="#DCF477" stroke="#242722" stroke-width="2.5"/>
+  <path d="m230 88 10-5m-12 21 14 2M62 103l-11 7" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Two hands pointing at a smiling face wearing a crown</title>
+  <ellipse cx="150" cy="142" rx="86" ry="7" fill="#242722" opacity=".08"/>
+  <circle cx="150" cy="86" r="34" fill="#FFD25A" stroke="#242722" stroke-width="3"/><circle cx="139" cy="80" r="4" fill="#242722"/><circle cx="161" cy="80" r="4" fill="#242722"/><path d="M136 96c8 9 20 9 28 0" stroke="#242722" stroke-width="3" stroke-linecap="round"/>
+  <path d="m124 50 8-22 18 14 18-14 8 22Z" fill="#FF724F" stroke="#242722" stroke-width="3" stroke-linejoin="round"/>
+  <g stroke="#242722" stroke-width="3" stroke-linejoin="round"><path d="M40 72h46a8 8 0 0 1 0 16H70v10H48a10 10 0 0 1-10-10V74Z" fill="#DCF477"/><path d="M260 72h-46a8 8 0 0 0 0 16h16v10h22a10 10 0 0 0 10-10V74Z" fill="#C7B7ED"/></g>
+  <path d="m98 46-9-8m113 8 9-8M97 120l-8 6m114-6 8 6" stroke="#242722" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

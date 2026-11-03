@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f6f0">
+  <meta name="description" content="Make random teams, choose your categories, and play fifteen party games, from Trivia Night to phone card games, with sounds and a scoreboard.">
+  <title>Game Night — Good people. Great games.</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="core.js" defer></script>
+  <script src="sounds.js" defer></script>
+  <script src="imposter.js" defer></script>
+  <script src="trivia.js" defer></script>
+  <script src="effects.js" defer></script>
+  <script src="banter.js" defer></script>
+  <script src="qr.js" defer></script>
+  <script src="phonehost.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a href="#lobby" class="brand" aria-label="Game Night home"><span class="brand-die" aria-hidden="true"><i></i><i></i><i></i><i></i></span>game night<span class="brand-period">.</span></a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#lobby" data-route="lobby" class="active">The lobby</a>
+      <a href="#games" data-route="games">The games <span class="nav-count" data-game-count>9</span></a>
+      <a href="#teams" data-route="teams">Your teams</a>
+      <a href="#scoreboard" data-route="scoreboard">Scoreboard</a>
+    </nav>
+    <button class="sound-toggle" data-sound-toggle aria-pressed="true" aria-label="Mute game sounds">♫ Sound on</button>
+  </header>
+
+  <main id="main" class="page-shell">
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="tiny-star">✳</span> PUT YOUR PHONES DOWN. GAME ON.</div>
+        <h1 id="hero-title">Good people.<br>Great <span class="word-mark">game nights<svg viewBox="0 0 470 20" aria-hidden="true"><path d="M5 13 Q225 -1 464 10 M58 18 Q225 8 412 15"/></svg></span>.</h1>
+        <p>Your favorite people. A little friendly competition.<br>We’ll handle the teams. You bring the snacks.</p>
+        <div class="hero-actions"><button class="button button-orange" id="hero-setup">Get the gang together <span aria-hidden="true">↗</span></button><a href="#games" class="text-link">Explore the games <span aria-hidden="true">↓</span></a></div>
+        <div class="hero-details"><span><b data-game-count>9</b> crowd favorites</span><span><b>2–40</b> players</span><span><i class="status-dot"></i> All together, offline</span></div>
+      </div>
+      <div class="hero-art"><img src="assets/hero.svg" alt="Playful dice and colorful playing cards" width="640" height="400"><span class="art-caption">A LITTLE CHAOS. A LOT OF LAUGHS.</span></div>
+    </section>
+
+    <div id="lobby-view" class="lobby-layout">
+      <section class="games-section" aria-labelledby="games-heading">
+        <div class="section-heading"><div><span class="section-kicker">THE MAIN EVENT</span><h2 id="games-heading">Pick your kind of fun<span class="orange-dot">.</span></h2></div><button class="surprise-button" id="surprise-game"><span aria-hidden="true">⤨</span> Surprise me</button></div>
+        <div class="filters" role="group" aria-label="Filter games"><button class="filter active" data-filter="all" aria-pressed="true">All games <span data-game-count>9</span></button><button class="filter" data-filter="team" aria-pressed="false">Team battles</button><button class="filter" data-filter="social" aria-pressed="false">Secret roles</button><button class="filter" data-filter="icebreaker" aria-pressed="false">Icebreakers</button><button class="filter" data-filter="phones" aria-pressed="false">📱 Phone games</button></div>
+        <div class="game-grid" id="game-grid"></div>
+        <div class="host-note"><span class="note-star" aria-hidden="true">✳</span><p><strong>House rule #1: Have a good time.</strong><br>Pick a game, pass the screen, and let the friendly rivalry begin.</p></div>
+      </section>
+
+      <aside class="crew-panel" id="crew-panel" aria-labelledby="crew-title">
+        <div class="crew-heading"><span class="section-kicker">FIRST, YOUR PEOPLE</span><span class="small-people" aria-hidden="true">☺ ☺</span></div>
+        <h2 id="crew-title">Who’s playing?</h2><p class="muted">Get everyone in. We’ll mix things up.</p>
+        <div class="count-row"><label for="player-count">Number of players</label><div class="stepper"><button id="count-minus" aria-label="Remove one player">−</button><input id="player-count" type="number" min="2" max="40" value="6" inputmode="numeric" aria-describedby="player-hint"><button id="count-plus" aria-label="Add one player">+</button></div></div>
+        <div class="field-label">THE ROLL CALL <span id="name-count">0 / 6 named</span></div>
+        <div id="player-inputs" class="player-inputs"></div>
+        <p class="field-hint" id="player-hint">2–40 people. Tap a face to change it. Blank names become “Player 1”, etc.</p>
+        <div class="team-count-row"><label for="team-count">Split into</label><select id="team-count" aria-label="Number of teams"></select></div>
+        <button class="button button-dark shuffle-button" id="shuffle-teams"><span aria-hidden="true">⤨</span> Make random teams <span aria-hidden="true">↗</span></button>
+        <p class="shuffle-hint">Fair teams. Fresh rivalries.</p>
+        <div class="crew-result" id="crew-result" hidden></div>
+        <details class="house-words" id="house-words"><summary><span><b>✎ House words</b><small id="house-count">Add your own inside jokes</small></span><span class="house-toggle" aria-hidden="true">+</span></summary><label for="house-input" class="sr-only">House words, one per line</label><textarea id="house-input" rows="5" maxlength="4000" placeholder="One per line, e.g.&#10;Uncle Joe’s famous pilau&#10;The office printer&#10;Nairobi traffic" spellcheck="false"></textarea><p class="field-hint">Shows up as a <b>House words</b> category in Charades, Who Am I? and Guess the Imposter. Up to 100, max 40 characters each.</p></details>
+        <div class="saved-note"><span aria-hidden="true">◉</span> <span id="save-status">Your night is saved on this device</span></div>
+      </aside>
+    </div>
+
+    <section id="teams-view" class="secondary-view" hidden aria-labelledby="teams-title"><div class="page-heading"><div><span class="section-kicker">LET THE FRIENDLY RIVALRY BEGIN</span><h1 id="teams-title">Meet your teams<span class="orange-dot">.</span></h1><p>Randomly mixed. Evenly matched. Ready for a little competition.</p></div><button class="button button-dark" id="reshuffle-teams">⤨ Shuffle again</button></div><div id="team-cards" class="team-grid"></div><div class="view-bottom"><button class="text-link" id="edit-players">← Edit the guest list</button><a href="#games" class="button button-orange">Find your first game ↗</a></div></section>
+
+    <section id="scoreboard-view" class="secondary-view" hidden aria-labelledby="scoreboard-title"><div class="page-heading"><div><span class="section-kicker">BRAGGING RIGHTS LIVE HERE</span><h1 id="scoreboard-title">The scoreboard<span class="orange-dot">.</span></h1><p>A little competition makes a great story.</p></div><div class="heading-actions"><button class="button button-outline" id="reset-scores">Reset scores</button><button class="button button-orange" id="crown-champions">♛ Crown the champions</button></div></div><div id="scoreboard-list"></div><div id="recent-rounds" class="recent-rounds"></div><div class="view-bottom"><span class="muted">Award a bonus point or fix a score with + and −.</span><a href="#games" class="button button-orange">One more round ↗</a></div></section>
+  </main>
+
+  <footer class="site-footer"><a href="#lobby" class="footer-brand">game night.</a><span>Made for the people in the room.</span><span>Less screen time. More <span class="footer-fun">“one more round.”</span></span></footer>
+
+  <dialog id="game-dialog" class="game-dialog" aria-labelledby="dialog-title"><div class="dialog-audio"><button class="sound-toggle" data-sound-toggle aria-pressed="true" aria-label="Mute game sounds">♫ Sound on</button><label class="volume-control"><span class="sr-only">Sound volume</span><input data-sound-volume type="range" min="0" max="1" step="0.05" value="0.45" aria-label="Sound volume"></label></div><button class="dialog-close" id="close-game" aria-label="Close game">×</button><div id="game-content"></div></dialog>
+  <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title"><span class="section-kicker">QUICK CHECK</span><h2 id="confirm-title">Start fresh?</h2><p id="confirm-message"></p><div class="dialog-actions"><button class="button button-outline" id="confirm-cancel">Keep playing</button><button class="button button-dark" id="confirm-accept">Yes, start fresh</button></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Turn on JavaScript to add players, make teams, and play games.</p></noscript>
+</body>
+</html>
