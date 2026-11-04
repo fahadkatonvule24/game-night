@@ -123,6 +123,7 @@ test('the public tunnel link is read from cloudflared and shared with the big sc
   const network = await (await fetch(`http://127.0.0.1:${server.address().port}/api/network`)).json();
   assert.equal(network.tunnel, 'ready');
   assert.equal(network.publicUrl, tunnel.url);
+  assert.equal(network.keepAwake, false, 'only the hosted server keeps itself awake');
   for (const path of ['/scripts/fetch-cloudflared.cjs', '/bin/cloudflared']) assert.equal((await fetch(`http://127.0.0.1:${server.address().port}${path}`)).status, 404, path);
 });
 

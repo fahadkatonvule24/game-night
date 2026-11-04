@@ -69,12 +69,12 @@ function sendJson(response, status, body) {
   response.end(JSON.stringify(body));
 }
 
-function createServer({ port = 3000, rooms = createRooms(), tunnel = { status: 'off', url: null } } = {}) {
+function createServer({ port = 3000, rooms = createRooms(), tunnel = { status: 'off', url: null }, keepAwake = false } = {}) {
   async function api(request, response, url) {
     const parts = url.pathname.split('/').filter(Boolean).slice(1);
     if (request.method === 'GET' && parts[0] === 'network') {
       const actualPort = server.address()?.port || port;
-      sendJson(response, 200, { urls: lanAddresses().map(address => `http://${address}:${actualPort}`), tunnel: tunnel.status, publicUrl: tunnel.url });
+      sendJson(response, 200, { urls: lanAddresses().map(address => `http://${address}:${actualPort}`), tunnel: tunnel.status, publicUrl: tunnel.url, keepAwake });
       return;
     }
     if (parts[0] !== 'rooms') { sendJson(response, 404, { error: 'Not found' }); return; }
@@ -155,7 +155,12 @@ if (require.main === module) {
   // Listen on every network card so phones on the same Wi-Fi can join phone games.
   const host = process.env.HOST || '0.0.0.0';
   const tunnel = { status: tunnelWanted() ? 'starting' : 'off', url: null };
-  createServer({ port, tunnel }).listen(port, host, () => {
+  // Render's free plan sleeps after 15 quiet minutes. Visiting our own public address every
+  // 10 minutes counts as a visit, so tables and the tunnel link survive. KEEP_AWAKE=off stops it.
+  const publicAddress = process.env.RENDER_EXTERNAL_URL;
+  const keepAwake = Boolean(publicAddress) && process.env.KEEP_AWAKE !== 'off';
+  if (keepAwake) setInterval(() => { fetch(`${publicAddress}/api/network`).catch(() => {}); }, 10 * 60 * 1000);
+  createServer({ port, tunnel, keepAwake }).listen(port, host, () => {
     console.log(`Game Night is ready: http://localhost:${port}`);
     lanAddresses().forEach(address => console.log(`On your Wi-Fi:       http://${address}:${port}`));
     if (tunnel.status === 'off') return;

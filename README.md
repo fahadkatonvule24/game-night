@@ -115,7 +115,7 @@ The app also runs on [Render](https://render.com) as a Node web service. Use bui
 
 - Open your Render address on the big screen. Phones scan the QR code from any Wi-Fi or mobile data.
 - The tunnel link changes whenever Render restarts the server. The QR code always shows the current link.
-- Render's free plan sleeps after 15 minutes without visitors. Open the site a minute before playing; the big screen keeps it awake while a table is open.
+- Render's free plan sleeps after 15 minutes without visitors. To prevent that, the server visits its own address every 10 minutes (it reads `RENDER_EXTERNAL_URL`, which Render sets). Set `KEEP_AWAKE=off` to stop it. Running non-stop uses about 744 of the 750 free hours a month, so keep this as your only free service. If Render restarts the server, the next visit wakes it in about a minute.
 - Set the environment variable `PUBLIC_TUNNEL=off` to turn the tunnel off, or `PUBLIC_TUNNEL=on` to use it on your own Linux or Windows computer.
 
 ## Saving your night
