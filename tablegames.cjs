@@ -632,19 +632,35 @@ function createRooms({ rng = Math.random, now = () => Date.now(), maxRooms = 50,
     room.clients.forEach(client => client.send(view(room, client.playerId)));
   }
   // client: { playerId, send(view), end() }. Returns an unsubscribe function.
-  function subscribe(code, { playerId, key, hostKey }, client) {
+  // Returns the player id a phone may see as, or null for the big screen.
+  function authorize(room, { playerId, key, hostKey }) {
+    if (hostKey) { checkHost(room, hostKey); return null; }
+    const player = room.players.find(p => p.id === playerId);
+    if (!player || player.key !== key) fail('You’re not seated at this table.');
+    return player.id;
+  }
+  function subscribe(code, auth, client) {
     const room = get(code);
-    let viewerId = null;
-    if (hostKey) checkHost(room, hostKey);
-    else {
-      const player = room.players.find(p => p.id === playerId);
-      if (!player || player.key !== key) fail('You’re not seated at this table.');
-      viewerId = player.id;
-    }
-    const entry = { ...client, playerId: viewerId };
+    const entry = { ...client, playerId: authorize(room, auth) };
     room.clients.add(entry);
-    entry.send(view(room, viewerId));
+    entry.send(view(room, entry.playerId));
     return () => room.clients.delete(entry);
+  }
+  // Long-polling works through every proxy and tunnel: answer at once if the table changed
+  // since `since`, otherwise wait for the next change (or the timeout) and answer then.
+  function poll(code, auth, since, timeoutMs = 25000) {
+    const room = get(code);
+    const viewerId = authorize(room, auth);
+    if (!(Number(since) >= room.version)) return { promise: Promise.resolve(view(room, viewerId)), cancel() {} };
+    let entry;
+    let timer;
+    const promise = new Promise(resolve => {
+      const done = value => { clearTimeout(timer); room.clients.delete(entry); resolve(value); };
+      entry = { playerId: viewerId, send: done, end: () => done({ closed: true }) };
+      room.clients.add(entry);
+      timer = setTimeout(() => done(view(room, viewerId)), timeoutMs);
+    });
+    return { promise, cancel: () => { clearTimeout(timer); room.clients.delete(entry); } };
   }
   function close(code, hostKey) {
     const room = get(code);
@@ -653,7 +669,7 @@ function createRooms({ rng = Math.random, now = () => Date.now(), maxRooms = 50,
     room.clients.forEach(client => client.end());
     rooms.delete(room.code);
   }
-  return { create, join, start, remove, act, subscribe, close, get size() { return rooms.size; } };
+  return { create, join, start, remove, act, subscribe, poll, close, get size() { return rooms.size; } };
 }
 
 module.exports = { GAMES, SUITS, RANKS, FACES, GameError, createRooms, matatu, cardPoints, rps, fourRow, imposter, passBomb, mostLikely, wouldYouRather, shuffle };

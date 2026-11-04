@@ -125,3 +125,27 @@ test('the public tunnel link is read from cloudflared and shared with the big sc
   assert.equal(network.publicUrl, tunnel.url);
   for (const path of ['/scripts/fetch-cloudflared.cjs', '/bin/cloudflared']) assert.equal((await fetch(`http://127.0.0.1:${server.address().port}${path}`)).status, 404, path);
 });
+
+test('long-polling answers at once when behind, waits for the next change, and keeps seats private', async t => {
+  const server = createServer();
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => server.close());
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const post = async (path, body) => (await fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })).json();
+  const room = await post('/api/rooms', { game: 'rps' });
+  const amina = await post(`/api/rooms/${room.code}/join`, { name: 'Amina' });
+  const first = await (await fetch(`${base}/api/rooms/${room.code}/poll?player=${amina.playerId}&key=${amina.key}&since=-1`)).json();
+  assert.equal(first.you.name, 'Amina');
+  const started = Date.now();
+  const waiting = fetch(`${base}/api/rooms/${room.code}/poll?player=${amina.playerId}&key=${amina.key}&since=${first.version}`).then(r => r.json());
+  await new Promise(resolve => setTimeout(resolve, 150));
+  await post(`/api/rooms/${room.code}/join`, { name: 'Brian' });
+  const next = await waiting;
+  assert.ok(Date.now() - started < 2000, 'the change arrives straight away');
+  assert.deepEqual(next.players.map(p => p.name), ['Amina', 'Brian']);
+  assert.equal((await fetch(`${base}/api/rooms/${room.code}/poll?player=${amina.playerId}&key=wrong&since=-1`)).status, 400);
+  const closing = fetch(`${base}/api/rooms/${room.code}/poll?host=${room.hostKey}&since=${next.version}`).then(r => r.json());
+  await new Promise(resolve => setTimeout(resolve, 100));
+  await post(`/api/rooms/${room.code}/close`, { hostKey: room.hostKey });
+  assert.deepEqual(await closing, { closed: true });
+});

@@ -985,27 +985,26 @@ test('Imposter, Pass the Bomb, Most Likely To and Would You Rather offer phones 
   assert.match(app.query('#dialog-title').textContent, /Couldn’t open a table/);
 });
 
-test('phone tables wait for the public tunnel and put its link in the QR code', async t => {
+test('phone tables wait for the public tunnel, put its link in the QR code, and long-poll the table', async t => {
   const app = setup(t);
-  const calls = [];
   let tunnelChecks = 0;
+  const polls = [];
   const reply = body => Promise.resolve({ ok: true, json: () => Promise.resolve(body) });
-  app.window.fetch = (url, init) => {
-    calls.push(url);
+  const lobby = { code: 'WXYZ', title: 'Matatu', min: 2, max: 6, started: false, players: [], game: null, version: 1 };
+  app.window.fetch = url => {
     if (url === '/api/rooms') return reply({ code: 'WXYZ', hostKey: 'secret' });
     if (url === '/api/network') return reply(++tunnelChecks < 2 ? { urls: [], tunnel: 'starting', publicUrl: null } : { urls: [], tunnel: 'ready', publicUrl: 'https://warm-lion-river-blue.trycloudflare.com' });
+    if (url.startsWith('/api/rooms/WXYZ/poll')) { polls.push(url); return polls.length === 1 ? reply(lobby) : new Promise(() => {}); }
     return reply({ ok: true });
   };
-  const streams = [];
-  app.window.EventSource = class { constructor(url) { this.url = url; streams.push(this); } addEventListener() {} close() { this.closed = true; } };
   app.window.setTimeout = callback => { Promise.resolve().then(callback); return 1; };
   app.window.GameNightQR = { toSvg: text => `<svg data-text="${text}"></svg>` };
   app.openGame('matatu');
   app.click('[data-action="start-round"]');
-  for (let i = 0; i < 12; i += 1) await settle();
+  for (let i = 0; i < 16; i += 1) await settle();
   assert.equal(tunnelChecks, 2, 'waited for the tunnel to come up');
-  assert.equal(streams.length, 1);
-  streams[0].onmessage({ data: JSON.stringify({ code: 'WXYZ', title: 'Matatu', min: 2, max: 6, started: false, players: [], game: null }) });
+  assert.match(polls[0], /\/api\/rooms\/WXYZ\/poll\?host=secret&since=-1/);
+  assert.match(polls[1], /since=1$/, 'the next poll waits for anything newer');
   assert.equal(app.query('.ph-url').textContent, 'https://warm-lion-river-blue.trycloudflare.com/play.html?room=WXYZ');
   assert.equal(app.query('.ph-qr svg').dataset.text, 'https://warm-lion-river-blue.trycloudflare.com/play.html?room=WXYZ');
   assert.match(app.query('.ph-join').textContent, /any Wi-Fi or mobile data/);

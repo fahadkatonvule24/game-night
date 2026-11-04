@@ -23,7 +23,6 @@
     let lanFound = false;
     let anyNetwork = false;
     let view = null;
-    let source = null;
     const feed = [];
     const seen = { events: -1, rounds: 0, seq: -1, winner: null, version: 0 };
 
@@ -73,11 +72,35 @@
         return;
       }
       if (destroyed) { call(`/api/rooms/${room.code}/close`, { hostKey: room.hostKey }).catch(() => {}); return; }
-      source = new host.EventSource(`/api/rooms/${room.code}/events?host=${encodeURIComponent(room.hostKey)}`);
-      source.onmessage = event => { host.clearTimeout(wake); view = JSON.parse(event.data); react(); render(); };
-      source.addEventListener('closed', () => { source.close(); });
+      host.clearTimeout(wake);
+      listen();
     }
 
+    // Long-polls the table: each answer arrives the moment something changes, and plain requests
+    // pass through hosting proxies and tunnels that would hold back a live stream. The steady
+    // check-ins also count as visits, which keeps free hosting awake during a game.
+    async function listen() {
+      let since = -1;
+      while (!destroyed) {
+        let response;
+        let data;
+        try {
+          response = await host.fetch(`/api/rooms/${room.code}/poll?host=${encodeURIComponent(room.hostKey)}&since=${since}`, { cache: 'no-store' });
+          data = await response.json().catch(() => ({}));
+        } catch {
+          if (destroyed) return;
+          await new Promise(resolve => host.setTimeout(resolve, 2000));
+          continue;
+        }
+        if (destroyed) return;
+        if (!response.ok || data.closed) { problem('This table has closed.', escape(data.error || 'Open a new table to keep playing.')); return; }
+        if (data.version === since) continue;
+        since = data.version;
+        view = data;
+        // A drawing bug must never stop the big screen following the game.
+        try { react(); render(); } catch (error) { host.console?.error('Could not draw the table', error); }
+      }
+    }
     // Turns fresh moves into commentary, sounds and floating emojis.
     function react() {
       const g = view.game;
@@ -311,8 +334,6 @@
       }
     }
     const timer = host.setInterval(pulse, 100);
-    // Free hosting sleeps after a quiet spell; phones joining through the tunnel don't count as visits, so the big screen checks in.
-    const keepAwake = host.setInterval(() => { Promise.resolve(host.fetch?.('/api/network')).catch(() => {}); }, 240000);
     seen.tick = 0;
 
     function render() {
@@ -352,8 +373,6 @@
       if (destroyed) return;
       destroyed = true;
       host.clearInterval(timer);
-      host.clearInterval(keepAwake);
-      source?.close();
       if (room) call(`/api/rooms/${room.code}/close`, { hostKey: room.hostKey }).catch(() => {});
       container.removeEventListener('click', onClick);
     }

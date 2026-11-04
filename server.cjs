@@ -104,6 +104,14 @@ function createServer({ port = 3000, rooms = createRooms(), tunnel = { status: '
       }
       return;
     }
+    if (request.method === 'GET' && parts[2] === 'poll') {
+      const query = url.searchParams;
+      const { promise, cancel } = rooms.poll(code, { playerId: query.get('player'), key: query.get('key'), hostKey: query.get('host') }, query.get('since'));
+      response.on('close', () => { if (!response.writableEnded) cancel(); });
+      const value = await promise;
+      if (!response.writableEnded && !response.destroyed) sendJson(response, 200, value);
+      return;
+    }
     if (request.method !== 'POST') { sendJson(response, 405, { error: 'Not allowed' }); return; }
     const body = await readJson(request);
     if (parts[2] === 'join') sendJson(response, 200, rooms.join(code, body));

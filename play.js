@@ -14,7 +14,6 @@
   let seat = code ? read(`gn-seat-${code}`) : null;
   const profile = read('gn-profile') || { name: '', emoji: FACES[Math.floor(Math.random() * FACES.length)] };
   let view = null;
-  let source = null;
   let choosingSuitFor = null;
   let busy = false;
   let lastBuzz = '';
@@ -69,24 +68,48 @@
     }
   }
 
-  function connect() {
-    source?.close();
+  // Long-polling: ask "anything new since version N?" and the server answers the moment something
+  // changes. Plain requests like this pass through every proxy and tunnel without being held back.
+  let listening = 0;
+  async function connect() {
+    const run = ++listening;
+    view = null;
     app.innerHTML = '<section class="waiting"><div class="spinner" aria-hidden="true"></div><p>Finding your seat…</p></section>';
-    setTimeout(() => { if (!view) { const note = app.querySelector('.waiting p'); if (note) note.textContent = 'Waking up the server. This can take up to a minute…'; } }, 5000);
-    source = new EventSource(`/api/rooms/${code}/events?player=${encodeURIComponent(seat.playerId)}&key=${encodeURIComponent(seat.key)}`);
-    source.onmessage = event => { view = JSON.parse(event.data); document.body.classList.remove('offline'); render(); };
-    source.onerror = () => document.body.classList.add('offline');
-    source.addEventListener('problem', event => {
-      source.close();
-      write(`gn-seat-${code}`, null);
-      seat = null;
-      renderJoin(JSON.parse(event.data).error);
-    });
-    source.addEventListener('closed', () => {
-      source.close();
-      write(`gn-seat-${code}`, null);
-      app.innerHTML = '<section class="waiting"><div class="big-emoji">👋</div><h1>The table is closed.</h1><p>Thanks for playing! Scan the next code on the big screen to join another game.</p></section>';
-    });
+    setTimeout(() => { if (!view && run === listening) { const note = app.querySelector('.waiting p'); if (note) note.textContent = 'Waking up the server. This can take up to a minute…'; } }, 5000);
+    let since = -1;
+    while (run === listening && seat) {
+      let response;
+      let data;
+      try {
+        response = await fetch(`/api/rooms/${code}/poll?player=${encodeURIComponent(seat.playerId)}&key=${encodeURIComponent(seat.key)}&since=${since}`, { cache: 'no-store' });
+        data = await response.json().catch(() => ({}));
+      } catch {
+        if (run !== listening) return;
+        document.body.classList.add('offline');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        continue;
+      }
+      if (run !== listening) return;
+      if (!response.ok) {
+        // The table is gone or this seat is no longer valid: back to the join screen.
+        write(`gn-seat-${code}`, null);
+        seat = null;
+        renderJoin(data.error || 'That table is no longer open.');
+        return;
+      }
+      document.body.classList.remove('offline');
+      if (data.closed) {
+        write(`gn-seat-${code}`, null);
+        app.innerHTML = '<section class="waiting"><div class="big-emoji">👋</div><h1>The table is closed.</h1><p>Thanks for playing! Scan the next code on the big screen to join another game.</p></section>';
+        return;
+      }
+      if (data.version !== since) {
+        since = data.version;
+        view = data;
+        // A drawing bug must never stop the phone listening for the next move.
+        try { render(); } catch (error) { console.error('Could not draw the table', error); }
+      }
+    }
   }
 
   const red = card => card.suit === '♥' || card.suit === '♦';
